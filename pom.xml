@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>org.exoplatform.ide.samples</groupId>
+   <artifactId>gae-sample</artifactId>
+   <version>1.0</version>
+   <packaging>war</packaging>
+   <name>eXo IDE :: Packaging :: Application</name>
+
+   <dependencies>
+      <dependency>
+         <groupId>com.google.gwt</groupId>
+         <artifactId>gwt-user</artifactId>
+         <version>2.4.0</version>
+      </dependency>
+      <dependency>
+         <groupId>com.google.gwt</groupId>
+         <artifactId>gwt-servlet</artifactId>
+         <version>2.4.0</version>
+      </dependency>
+      <dependency>
+         <groupId>com.google.appengine</groupId>
+         <artifactId>appengine-api-1.0-sdk</artifactId>
+         <version>1.6.5</version>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.appengine</groupId>
+         <artifactId>appengine-api-labs</artifactId>
+         <version>1.6.5</version>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.appengine</groupId>
+         <artifactId>appengine-jsr107cache</artifactId>
+         <version>1.6.5</version>
+      </dependency>
+
+      <dependency>
+         <groupId>net.sf.jsr107cache</groupId>
+         <artifactId>jsr107cache</artifactId>
+         <version>1.1</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.datanucleus</groupId>
+         <artifactId>datanucleus-core</artifactId>
+         <version>1.1.5</version>
+         <scope>runtime</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>javax.transaction</groupId>
+                    <artifactId>transaction-api</artifactId>
+                </exclusion>
+            </exclusions>
+      </dependency>
+
+      <dependency>
+         <groupId>org.datanucleus</groupId>
+         <artifactId>datanucleus-jpa</artifactId>
+         <version>1.1.5</version>
+      </dependency>
+
+      <dependency>
+         <groupId>com.google.appengine.orm</groupId>
+         <artifactId>datanucleus-appengine</artifactId>
+         <version>1.0.10</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.geronimo.specs</groupId>
+         <artifactId>geronimo-jpa_3.0_spec</artifactId>
+         <version>1.1.1</version>
+      </dependency>
+
+      <dependency>
+         <groupId>org.apache.geronimo.specs</groupId>
+         <artifactId>geronimo-jta_1.1_spec</artifactId>
+         <version>1.1.1</version>
+      </dependency>
+
+      <dependency>
+         <groupId>javax.jdo</groupId>
+         <artifactId>jdo2-api</artifactId>
+         <version>2.3-eb</version>
+      </dependency>
+   </dependencies>
+
+   <build>
+
+      <plugins>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+               <skipTests>true</skipTests>
+            </configuration>
+         </plugin>
+
+         <plugin>
+            <groupId>org.datanucleus</groupId>
+            <artifactId>maven-datanucleus-plugin</artifactId>
+            <version>1.1.4</version>
+            <configuration>
+               <mappingIncludes>**/shared/*.class</mappingIncludes> 
+               <verbose>true</verbose>
+               <enhancerName>ASM</enhancerName>
+                <api>JDO</api>
+            </configuration>
+            <executions>
+               <execution>
+                  <phase>compile</phase>
+                  <goals>
+                     <goal>enhance</goal>
+                  </goals>
+               </execution>
+            </executions>
+            <dependencies>
+                <dependency>
+                    <groupId>org.datanucleus</groupId>
+                    <artifactId>datanucleus-core</artifactId>
+                    <version>1.1.5</version>
+                    <exclusions>
+                        <exclusion>
+                            <groupId>javax.transaction</groupId>
+                            <artifactId>transaction-api</artifactId>
+                        </exclusion>
+                    </exclusions>
+                </dependency>
+                <dependency>
+                    <groupId>org.datanucleus</groupId>
+                    <artifactId>datanucleus-rdbms</artifactId>
+                    <version>1.1.5</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.datanucleus</groupId>
+                    <artifactId>datanucleus-enhancer</artifactId>
+                    <version>1.1.4</version>
+                </dependency>
+            </dependencies>
+         </plugin>
+
+         <!-- configure the GWT-Maven plugin -->
+         <plugin>
+            <groupId>org.codehaus.mojo</groupId>
+            <artifactId>gwt-maven-plugin</artifactId>
+            <version>2.4.0</version>
+            <configuration>
+               <module>com.google.appengine.demos.taskengine.Tasks</module>
+               <runTarget>Task.html</runTarget>
+               <logLevel>INFO</logLevel>
+               <skipTests>${gwt.test.skip}</skipTests>
+               <extraJvmArgs>-Xmx2048m</extraJvmArgs>
+            </configuration>
+            <executions>
+               <execution>
+                  <phase>compile</phase>
+                  <goals>
+                     <goal>compile</goal>
+                  </goals>
+               </execution>
+            </executions>
+         </plugin>
+
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-war-plugin</artifactId>
+            <configuration>
+               <webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+               <webResources>
+                  <resource>
+                     <directory>src/main/webapp/WEB-INF</directory>
+                     <targetPath>WEB-INF</targetPath>
+                  </resource>
+               </webResources>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+</project>
